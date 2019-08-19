@@ -6,71 +6,59 @@ import os
 
 app = Flask(__name__)
 
-def template(title = "HELLO!", text = ""):
+
+def template(title='HELLO!', text=''):
     now = datetime.datetime.now()
-    timeString = now
-    templateDate = {
-        'title' : title,
-        'time' : timeString,
-        'text' : text
-        }
-    return templateDate
+    time_string = now
+    template_date = {
+        'title': title,
+        'time': time_string,
+        'text': text
+    }
+    return template_date
 
-@app.route("/")
+
+@app.route('/')
 def hello():
-    templateData = template()
-    return render_template('main.html', **templateData)
+    template_data = template()
+    return render_template('main.html', **template_data)
 
-@app.route("/clean_gpio")
+
+@app.route('/clean_gpio')
 def clean_gpio():
-    status = water.clean_gpio()
-    message = "Rpi GPIO has been reset!"
-    templateData = template(text = message)
-    return render_template('main.html', **templateData)
+    water.clean_gpio()
+    message = 'Rpi GPIO has been reset!'
+    template_data = template(text=message)
+    return render_template('main.html', **template_data)
 
-@app.route("/last_watered")
+
+@app.route('/last_watered')
 def check_last_watered():
-    templateData = template(text = water.get_last_watered())
-    return render_template('main.html', **templateData)
+    template_data = template(text=water.get_last_watered())
+    return render_template('main.html', **template_data)
 
-@app.route("/sensor")
+
+@app.route('/sensor')
 def action():
     status = water.get_status()
-    message = ""
-    if (status == 1):
-        message = "Water me please!"
+    if status == 1:
+        message = 'Water me please!'
     else:
-        message = "I'm a happy plant"
+        message = 'I''m a happy plant'
 
-    templateData = template(text = message)
-    return render_template('main.html', **templateData)
+    template_data = template(text=message)
+    return render_template('main.html', **template_data)
 
-@app.route("/water")
+
+@app.route('/water')
 def action2():
     water.pump_on()
-    templateData = template(text = "Watered Once")
-    return render_template('main.html', **templateData)
+    template_data = template(text='Watered Once')
+    return render_template('main.html', **template_data)
 
-@app.route("/auto/water/<toggle>")
-def auto_water(toggle):
-    running = False
-    if toggle == "ON":
-        templateData = template(text = "Auto Watering On")
-        for process in psutil.process_iter():
-            try:
-                if process.cmdline()[1] == 'auto_water.py':
-                    templateData = template(text = "Already running")
-                    running = True
-            except:
-                pass
-        if not running:
-            os.system("python3.4 auto_water.py&")
-    else:
-        templateData = template(text = "Auto Watering Off")
-        os.system("pkill -f water.py")
 
-    return render_template('main.html', **templateData)
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=80, debug=True)
-    
+if __name__ == '__main__':
+    try:
+        app.run(host='0.0.0.0', port=80, debug=True)
+    except KeyboardInterrupt:  # If CTRL+C is pressed, exit cleanly:
+        water.clean_gpio()  # cleanup all GPI
