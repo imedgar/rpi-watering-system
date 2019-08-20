@@ -6,6 +6,8 @@ import time
 init = False
 GPIO.setmode(GPIO.BOARD)  # Broadcom pin-numbering scheme
 fileName = "last_watered.txt"
+auto_log = "auto_watering.txt"
+datetime_format = "%b %d %Y %H:%M:%S"
 
 
 def init_output(pin):
@@ -19,10 +21,10 @@ def clean_gpio():
     GPIO.setmode(GPIO.BOARD)  # Broadcom pin-numbering scheme
 
 
-def get_last_watered():
+def get_last_watered(file):
     """ Shows when was the last time the plant was watered."""
     try:
-        f = open(fileName, "r")
+        f = open(fileName if file == 0 else auto_log , "r")
         return f.readline()
     except IOError:
         return "file_does_not_exist"
@@ -30,7 +32,7 @@ def get_last_watered():
 
 def set_last_watered():
     f = open(fileName, "w")
-    f.write("Last watered {}".format(datetime.datetime.now()))
+    f.write("Last watered {}".format(datetime.datetime.now().strftime(datetime_format)))
     f.close()
 
 
@@ -53,5 +55,11 @@ def pump_on(pump_pin=7, delay=1):
 
 
 def pump_on_if_needed(pump_pin=7, delay=1):
+    f = open(auto_log, "w")
     if get_status() == 0:
         pump_on(pump_pin, delay)
+        f.write("Watered @ {}".format(datetime.datetime.now().strftime(datetime_format)))
+    else:
+        f.write("Not watered @ {}".format(datetime.datetime.now().strftime(datetime_format)))
+    f.close()
+    GPIO.cleanup()  # cleanup all GPI
