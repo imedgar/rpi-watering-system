@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 
 
-def template(title='HELLO!', text=''):
+def template(title='watering_system', text=''):
     time_string = datetime.datetime.now().strftime("%d %b %Y %H:%M:%S")
     template_date = {
         'title': title,
