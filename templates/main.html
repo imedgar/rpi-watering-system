@@ -33,16 +33,15 @@
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
     <main role="main" class="inner cover">
         <h1>PLANT HELPLINE</h1>
-        <h2></h2>
+        <p>{{ time }}</p>
         <br>
         <div class="row mb-2">
             <div class="col-md-5">
                 <div class="row border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                     <div class="col p-4 d-flex flex-column position-static">
-                    <p> The date and time on the server is: {{ time }} </p>
                     <p> {{ last_watered }} </p>
                     <p> {{ auto_watered }} </p>
-                    <p> {{ text }} </p>
+                    <h2> {{ text }} </h2>
                     </div>
                     <div class="col-auto d-none d-lg-block bg-picture {{ is_happy }}" ></div>
                 </div>
