@@ -8,6 +8,7 @@ GPIO.setmode(GPIO.BOARD)  # Broadcom pin-numbering scheme
 last_watered_file = "last_watered.txt"
 auto_watering_file = "auto_watering.txt"
 datetime_format = "%b %d %Y %H:%M:%S"
+water_flow = 3
 
 
 def init_output(pin):
@@ -32,7 +33,7 @@ def get_last_watered(file):
 
 def set_last_watered():
     f = open(last_watered_file, "w")
-    f.write("Last watered {}".format(datetime.datetime.now().strftime(datetime_format)))
+    f.write("Plant was watered @ {}".format(datetime.datetime.now().strftime(datetime_format)))
     f.close()
 
 
@@ -48,18 +49,18 @@ def low_high_delay(pin, delay):
     GPIO.output(pin, GPIO.HIGH)
 
 
-def pump_on(pump_pin=7, delay=1):
+def pump_on(pump_pin=7, delay=water_flow):
     init_output(pump_pin)
     set_last_watered()
     low_high_delay(pump_pin, delay)
 
 
-def pump_on_if_needed(pump_pin=7, delay=1):
+def pump_on_if_needed(pump_pin=7, delay=water_flow):
     f = open(auto_watering_file, "w")
     if get_status() == 0:
         pump_on(pump_pin, delay)
-        f.write("Watered @ {}".format(datetime.datetime.now().strftime(datetime_format)))
+        f.write("HUE checked and watered the plant @ {}".format(datetime.datetime.now().strftime(datetime_format)))
     else:
-        f.write("Not watered @ {}".format(datetime.datetime.now().strftime(datetime_format)))
+        f.write("HUE checked and NOT watered the plant @ {}".format(datetime.datetime.now().strftime(datetime_format)))
     f.close()
     GPIO.cleanup()  # cleanup all GPI
