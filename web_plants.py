@@ -12,7 +12,7 @@ def template(title='watering-system', text='', is_happy=''):
         'time': time_string,
         'last_watered': water.get_last_watered(0),
         'auto_watered': water.get_last_watered(1),
-        'is_happy': 'blink-red' if water.get_status() == 0 else 'blink-green',
+        'is_happy': 'red' if water.get_status() == 0 else 'green',
         'text': text
     }
     return template_date

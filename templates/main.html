@@ -6,7 +6,9 @@
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <style>
         h1,h2,p {color: greenyellow;}
-        .dark-like-my-soul {background: black;}
+        body {background: black;}
+        .green {background-color: green;}
+        .red {background-color: red;}
         .bg-picture {
             width:150px;
             overflow: hidden;
@@ -14,36 +16,50 @@
             background-position: center;
             background-image: url("{{ url_for('static', filename='plant.png') }}");
         }
-        .blink-green {
-            width: 150px;
-            animation: blinker 3s linear infinite;
-            background-color: green;
+        .blink {
+        width: 150;
+        -webkit-animation-name: to-blink; /* Safari 4.0 - 8.0 */
+        -webkit-animation-duration: 4s; /* Safari 4.0 - 8.0 */
+        -webkit-animation-iteration-count: infinite; /* Safari 4.0 - 8.0 */
+        -moz-animation-name: to-blink; /* Mozilla */
+        -moz-animation-duration: 4s; /* Mozilla */
+        -moz-animation-iteration-count: infinite; /* Mozilla */
+        animation-name: to-blink;
+        animation-duration: 4s;
+        animation-iteration-count: infinite;
         }
-        .blink-red {
-            width: 150px;
-            animation: blinker 3s linear infinite;
-            background-color: red;
+
+        /* Safari 4.0 - 8.0 */
+        @-webkit-keyframes to-blink {
+        50% {opacity: 0;}
         }
-        @keyframes blinker {
-            50% {opacity: 0;}
+
+        /* Mozilla */
+        @-moz-keyframes to-blink {
+        50% {opacity: 0;}
+        }
+
+        /* Standard syntax */
+        @keyframes to-blink {
+        50% {opacity: 0;}
         }
     </style>
 </head>
-<body class="dark-like-my-soul">
-<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+<body>
+<div class="container">
     <main role="main" class="inner cover">
         <h1>PLANT HELPLINE</h1>
         <p>{{ time }}</p>
         <br>
-        <div class="row mb-2">
-            <div class="col-md-5">
+        <div class="row">
+            <div class="col-sm-12">
                 <div class="row border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                     <div class="col p-4 d-flex flex-column position-static">
                     <p> {{ last_watered }} </p>
                     <p> {{ auto_watered }} </p>
                     <h2> {{ text }} </h2>
                     </div>
-                    <div class="col-auto d-none d-lg-block bg-picture {{ is_happy }}" ></div>
+                    <div class="col-auto d-flex d-lg-block bg-picture blink {{ is_happy }}"></div>
                 </div>
             </div>
         </div>
