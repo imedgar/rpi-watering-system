@@ -1,6 +1,6 @@
 # External module imp
 import RPi.GPIO as GPIO
-import datetime
+from datetime import datetime
 import time
 
 init = False
@@ -33,7 +33,7 @@ def get_last_watered(file):
 
 def set_last_watered():
     f = open(last_watered_file, "w")
-    f.write("Plant was watered @ {}".format(datetime.datetime.now().strftime(datetime_format)))
+    f.write("Plant was watered @ {}".format(datetime.now().strftime(datetime_format)))
     f.close()
 
 
@@ -59,8 +59,17 @@ def pump_on_if_needed(pump_pin=7, delay=water_flow):
     f = open(auto_watering_file, "w")
     if get_status() == 0:
         pump_on(pump_pin, delay)
-        f.write("HUE checked and watered the plant @ {}".format(datetime.datetime.now().strftime(datetime_format)))
+        f.write("HUE checked and watered the plant @ {}".format(datetime.now().strftime(datetime_format)))
     else:
-        f.write("HUE checked and NOT watered the plant @ {}".format(datetime.datetime.now().strftime(datetime_format)))
+        f.write("HUE checked and NOT watered the plant @ {}".format(datetime.now().strftime(datetime_format)))
     f.close()
     GPIO.cleanup()  # cleanup all GPI
+
+def time_diff(last_watered):
+    last_watered_dt = datetime.strptime(last_watered.strip()[24:], "%b %d %Y %H:%M:%S")
+    diff = last_watered_dt - datetime.now()
+    days, seconds = diff.days, diff.seconds
+    hours = days * 24 + seconds // 3600
+    minutes = (seconds % 3600) // 60
+    seconds = seconds % 60
+    return last_watered + ' ( It''s been {}h {}min )'.format(abs(hours), minutes)

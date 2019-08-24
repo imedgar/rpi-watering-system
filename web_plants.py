@@ -10,7 +10,7 @@ def template(title='watering-system', text='', is_happy=''):
     template_date = {
         'title': title,
         'time': time_string,
-        'last_watered': water.get_last_watered(0),
+        'last_watered': water.time_diff(water.get_last_watered(0)),
         'auto_watered': water.get_last_watered(1),
         'is_happy': 'red' if water.get_status() == 0 else 'green',
         'text': text
