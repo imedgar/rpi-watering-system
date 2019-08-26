@@ -41,15 +41,17 @@ def get_status(pin=8):
 
 
 def pump_on(pump_pin=7, delay=water_flow):
-    # init the output
-    GPIO.setup(pump_pin, GPIO.OUT)
-    GPIO.output(pump_pin, GPIO.LOW)
-    GPIO.output(pump_pin, GPIO.HIGH)
-    write_file(0, dict_en['watered_at'].format(datetime_now_str()))
-    # pump on with for x sec
-    GPIO.output(pump_pin, GPIO.LOW)
-    time.sleep(delay)
-    GPIO.output(pump_pin, GPIO.HIGH)
+    # avoid accidentally clicking or several request
+    if(time_diff()['minutes'] > 0 or time_diff()['seconds'] >= 10):
+        # init the output
+        GPIO.setup(pump_pin, GPIO.OUT)
+        GPIO.output(pump_pin, GPIO.LOW)
+        GPIO.output(pump_pin, GPIO.HIGH)
+        write_file(0, dict_en['watered_at'].format(datetime_now_str()))
+        # pump on with for x sec
+        GPIO.output(pump_pin, GPIO.LOW)
+        time.sleep(delay)
+        GPIO.output(pump_pin, GPIO.HIGH)
 
 
 def pump_on_if_needed(pump_pin=7, delay=water_flow):
@@ -61,13 +63,17 @@ def pump_on_if_needed(pump_pin=7, delay=water_flow):
     GPIO.cleanup()
 
 
-def time_diff(last_watered):
+def time_diff():
     # if the message is change also should the substring to get the time
-    diff = datetime.now() - datetime.strptime(last_watered.strip().rsplit('@ ', 1)[1], datetime_format)
+    diff = datetime.now() - datetime.strptime(read_file(0).strip().rsplit('@ ', 1)[1], datetime_format)
     hours = diff.days * 24 + diff.seconds // 3600
     minutes = (diff.seconds % 3600) // 60
-    # seconds = seconds % 60 # not used for now
-    return last_watered + ' ' + dict_en['time_since'].format(abs(hours), minutes)
+    seconds = diff.seconds % 60 # not used for now
+    return {
+        'hours': abs(hours),
+        'minutes': minutes,
+        'seconds': seconds
+    }
 
 
 def datetime_now_str():

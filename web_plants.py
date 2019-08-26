@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, url_for
-import datetime
+from datetime import datetime
 import water
 from dict_en import dict_en
 
@@ -12,11 +12,13 @@ not_happy = 'red'
 def template(title='watering-system', text=''):
     return {
         'title': title,
-        'time': datetime.datetime.now().strftime("%d %b %Y %H:%M:%S"),
-        'last_watered': water.time_diff(water.read_file(0)),
-        'auto_watered': water.read_file(1),
+        'text': text,
+        'time': water.datetime_now_str(),
         'is_happy': not_happy if water.get_status() == 0 else happy,
-        'text': text
+        'auto_watered': water.read_file(1),
+        'last_watered': water.read_file(0) + ' ' + dict_en['time_since'].format(
+            water.time_diff()['hours'],
+            water.time_diff()['minutes'])
     }
 
 
