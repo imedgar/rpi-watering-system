@@ -17,32 +17,27 @@
             background-image: url("{{ url_for('static', filename='plant.png') }}");
         }
         .blink {
-        width: 150;
-        -webkit-animation-name: to-blink; /* Safari 4.0 - 8.0 */
-        -webkit-animation-duration: 4s; /* Safari 4.0 - 8.0 */
-        -webkit-animation-iteration-count: infinite; /* Safari 4.0 - 8.0 */
-        -moz-animation-name: to-blink; /* Mozilla */
-        -moz-animation-duration: 4s; /* Mozilla */
-        -moz-animation-iteration-count: infinite; /* Mozilla */
-        animation-name: to-blink;
-        animation-duration: 4s;
-        animation-iteration-count: infinite;
+            width: 150px;
+            -webkit-animation-name: to-blink; /* Safari 4.0 - 8.0 */
+            -webkit-animation-duration: 4s; /* Safari 4.0 - 8.0 */
+            -webkit-animation-iteration-count: infinite; /* Safari 4.0 - 8.0 */
+            -moz-animation-name: to-blink; /* Mozilla */
+            -moz-animation-duration: 4s; /* Mozilla */
+            -moz-animation-iteration-count: infinite; /* Mozilla */
+            animation-name: to-blink;
+            animation-duration: 4s;
+            animation-iteration-count: infinite;
         }
 
         /* Safari 4.0 - 8.0 */
-        @-webkit-keyframes to-blink {
-        50% {opacity: 0;}
-        }
+        @-webkit-keyframes to-blink { 50% {opacity: 0;} }
 
         /* Mozilla */
-        @-moz-keyframes to-blink {
-        50% {opacity: 0;}
-        }
+        @-moz-keyframes to-blink { 50% {opacity: 0;} }
 
         /* Standard syntax */
-        @keyframes to-blink {
-        50% {opacity: 0;}
-        }
+        @keyframes to-blink { 50% {opacity: 0;} }
+
     </style>
 </head>
 <body>
@@ -55,16 +50,16 @@
             <div class="col-sm-12">
                 <div class="row border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                     <div class="col p-4 d-flex flex-column position-static">
-                    <p> {{ last_watered }} </p>
-                    <p> {{ auto_watered }} </p>
-                    <h2> {{ text }} </h2>
+                        <p> {{ last_watered }} </p>
+                        <p> {{ auto_watered }} </p>
+                        <h2> {{ text }} </h2>
                     </div>
                     <div class="col-auto d-flex d-lg-block bg-picture blink {{ is_happy }}"></div>
                 </div>
             </div>
         </div>
         <br>
-        <a href="/sensor"><button class="btn btn-success">Check Soil Status</button></a>
+        <a href="/"><button class="btn btn-success">Check Soil Status</button></a>
         <a href="/water"><button class="btn btn-info">Water Once</button></a><br><br>
         <br><br>
         <a href="/clean_gpio"><button type="button" class="btn btn-danger">Reset GPIO</button></a>

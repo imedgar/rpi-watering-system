@@ -1,59 +1,42 @@
 from flask import Flask, render_template, redirect, url_for
 import datetime
 import water
+from dict_en import dict_en
 
 app = Flask('watering-system', static_folder='./templates')
+html_template = 'main.html'
+happy = 'green'
+not_happy = 'red'
 
 
-def template(title='watering-system', text='', is_happy=''):
-    time_string = datetime.datetime.now().strftime("%d %b %Y %H:%M:%S")
-    template_date = {
+def template(title='watering-system', text=''):
+    return {
         'title': title,
-        'time': time_string,
-        'last_watered': water.time_diff(water.get_last_watered(0)),
-        'auto_watered': water.get_last_watered(1),
-        'is_happy': 'red' if water.get_status() == 0 else 'green',
+        'time': datetime.datetime.now().strftime("%d %b %Y %H:%M:%S"),
+        'last_watered': water.time_diff(water.read_file(0)),
+        'auto_watered': water.read_file(1),
+        'is_happy': not_happy if water.get_status() == 0 else happy,
         'text': text
     }
-    return template_date
 
 
 @app.route('/')
 def root():
-    status = water.get_status()
-    if status == 0:
-        message = 'Water me please :''('
-        is_happy = 'blink-red'
-    else:
-        message = 'I''m a happy plant :)'
-        is_happy = 'blink-green'
-    template_data = template(text=message, is_happy=is_happy)
-    return render_template('main.html', **template_data)
+    template_data = template(
+        text=dict_en['need_water_msg'] if water.get_status() == 0
+        else dict_en['not_need_water_msg'])
+    return render_template(html_template, **template_data)
 
 
 @app.route('/clean_gpio')
 def clean_gpio():
     water.clean_gpio()
-    message = 'Rpi GPIO has been reset!'
-    template_data = template(text=message)
-    return render_template('main.html', **template_data)
-
-
-@app.route('/sensor')
-def action():
-    status = water.get_status()
-    if status == 0:
-        message = 'Water me please :''('
-        is_happy = 'blink-red'
-    else:
-        message = 'I''m a happy plant :)'
-        is_happy = 'blink-green'
-    template_data = template(text=message, is_happy=is_happy)
-    return render_template('main.html', **template_data)
+    template_data = template(text=dict_en['gpio_reset_msg'])
+    return render_template(html_template, **template_data)
 
 
 @app.route('/water')
 def pump():
     water.pump_on()
-    template_data = template(text='Watered Once')
-    return render_template('main.html', **template_data)
+    template_data = template(text=dict_en['watered_msg'])
+    return render_template(html_template, **template_data)

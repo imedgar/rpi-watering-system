@@ -2,38 +2,35 @@
 import RPi.GPIO as GPIO
 from datetime import datetime
 import time
+from dict_en import dict_en
+
 
 init = False
 GPIO.setmode(GPIO.BOARD)  # Broadcom pin-numbering scheme
 last_watered_file = "last_watered.txt"
 auto_watering_file = "auto_watering.txt"
+IOError_msg = "file_does_not_exist"
 datetime_format = "%b %d %Y %H:%M:%S"
 water_flow = 3
 
 
-def init_output(pin):
-    GPIO.setup(pin, GPIO.OUT)
-    GPIO.output(pin, GPIO.LOW)
-    GPIO.output(pin, GPIO.HIGH)
-
-
 def clean_gpio():
-    GPIO.cleanup()  # cleanup all GPI
-    GPIO.setmode(GPIO.BOARD)  # Broadcom pin-numbering scheme
+    """ Resets the GPIO board."""
+    GPIO.cleanup()
+    GPIO.setmode(GPIO.BOARD)
 
 
-def get_last_watered(file):
-    """ Shows when was the last time the plant was watered."""
+def read_file(file):
+    """ Read files, 0 for last_watered and 1 for auto_watering"""
     try:
-        f = open(last_watered_file if file == 0 else auto_watering_file , "r")
-        return f.readline()
+        return open(last_watered_file if file == 0 else auto_watering_file, "r").readline()
     except IOError:
-        return "file_does_not_exist"
+        return IOError_msg
 
 
-def set_last_watered():
-    f = open(last_watered_file, "w")
-    f.write("Plant was watered @ {}".format(datetime.now().strftime(datetime_format)))
+def write_file(file, content):
+    f = open(last_watered_file if file == 0 else auto_watering_file, "w")
+    f.write(content)
     f.close()
 
 
@@ -43,33 +40,33 @@ def get_status(pin=8):
     return GPIO.input(pin)
 
 
-def low_high_delay(pin, delay):
-    GPIO.output(pin, GPIO.LOW)
-    time.sleep(delay)
-    GPIO.output(pin, GPIO.HIGH)
-
-
 def pump_on(pump_pin=7, delay=water_flow):
-    init_output(pump_pin)
-    set_last_watered()
-    low_high_delay(pump_pin, delay)
+    # init the output
+    GPIO.setup(pump_pin, GPIO.OUT)
+    GPIO.output(pump_pin, GPIO.LOW)
+    GPIO.output(pump_pin, GPIO.HIGH)
+    write_file(0, dict_en['watered_at'].format(datetime.now().strftime(datetime_format)))
+    # pump on with for x sec
+    GPIO.output(pump_pin, GPIO.LOW)
+    time.sleep(delay)
+    GPIO.output(pump_pin, GPIO.HIGH)
 
 
 def pump_on_if_needed(pump_pin=7, delay=water_flow):
-    f = open(auto_watering_file, "w")
     if get_status() == 0:
         pump_on(pump_pin, delay)
-        f.write("HUE checked and watered the plant @ {}".format(datetime.now().strftime(datetime_format)))
+        write_file(1, dict_en['HUE_checked'].format(datetime.now().strftime(datetime_format)))
     else:
-        f.write("HUE checked and NOT watered the plant @ {}".format(datetime.now().strftime(datetime_format)))
-    f.close()
-    GPIO.cleanup()  # cleanup all GPI
+        write_file(1, dict_en['HUE_checked_and_not'].format(datetime.now().strftime(datetime_format)))
+    GPIO.cleanup()
+
 
 def time_diff(last_watered):
-    last_watered_dt = datetime.strptime(last_watered.strip()[24:], "%b %d %Y %H:%M:%S")
+    # if the message is change also should the substring to get the time
+    last_watered_dt = datetime.strptime(last_watered.strip()[24:], datetime_format)
     diff = last_watered_dt - datetime.now()
     days, seconds = diff.days, diff.seconds
     hours = days * 24 + seconds // 3600
     minutes = (seconds % 3600) // 60
-    seconds = seconds % 60
-    return last_watered + ' ( It''s been {}h {}min )'.format(abs(hours), minutes)
+    # seconds = seconds % 60 # not used for now
+    return last_watered + ' ' + dict_en['time_since'].format(abs(hours), minutes)
