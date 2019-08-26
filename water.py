@@ -45,7 +45,7 @@ def pump_on(pump_pin=7, delay=water_flow):
     GPIO.setup(pump_pin, GPIO.OUT)
     GPIO.output(pump_pin, GPIO.LOW)
     GPIO.output(pump_pin, GPIO.HIGH)
-    write_file(0, dict_en['watered_at'].format(datetime.now().strftime(datetime_format)))
+    write_file(0, dict_en['watered_at'].format(datetime_now_str()))
     # pump on with for x sec
     GPIO.output(pump_pin, GPIO.LOW)
     time.sleep(delay)
@@ -55,18 +55,20 @@ def pump_on(pump_pin=7, delay=water_flow):
 def pump_on_if_needed(pump_pin=7, delay=water_flow):
     if get_status() == 0:
         pump_on(pump_pin, delay)
-        write_file(1, dict_en['HUE_checked'].format(datetime.now().strftime(datetime_format)))
+        write_file(1, dict_en['HUE_checked'].format(datetime_now_str()))
     else:
-        write_file(1, dict_en['HUE_checked_and_not'].format(datetime.now().strftime(datetime_format)))
+        write_file(1, dict_en['HUE_checked_and_not'].format(datetime_now_str()))
     GPIO.cleanup()
 
 
 def time_diff(last_watered):
     # if the message is change also should the substring to get the time
-    last_watered_dt = datetime.strptime(last_watered.strip()[24:], datetime_format)
-    diff = last_watered_dt - datetime.now()
-    days, seconds = diff.days, diff.seconds
-    hours = days * 24 + seconds // 3600
-    minutes = (seconds % 3600) // 60
+    diff = datetime.now() - datetime.strptime(last_watered.strip().rsplit('@ ', 1)[1], datetime_format)
+    hours = diff.days * 24 + diff.seconds // 3600
+    minutes = (diff.seconds % 3600) // 60
     # seconds = seconds % 60 # not used for now
     return last_watered + ' ' + dict_en['time_since'].format(abs(hours), minutes)
+
+
+def datetime_now_str():
+    return datetime.now().strftime(datetime_format)
