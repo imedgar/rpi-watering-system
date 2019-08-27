@@ -4,12 +4,10 @@ dict_en = {
     'need_water_msg': "Water me please :\'(",
     'not_need_water_msg': "I\'m a happy plant :)",
     'gpio_reset_msg': "Rpi GPIO has been reset!",
-    'watered_msg': "Watered Once",
-
-    # water msg
-    'watered_at': "Plant was watered @ {}",
-    'HUE_checked': "HUE checked and watered the plant @ {}",
-    'HUE_checked_and_not': "HUE checked and NOT watered the plant @ {}",
-    'time_since': "( It\'s been {}h {}min )"
+    'pump_msg': "H.U.E watered the plant",
+    'not_pump_msg': "H.U.E already watered the plant like 10sec ago!!!",
+    'watered_at': "Plant was watered @ {} ( It\'s been {}h {}min )",
+    'HUE_checked': "H.U.E. checked and watered the plant @ {}",
+    'HUE_checked_and_not': "H.U.E. checked and NOT watered the plant @ {}"
 
 }
