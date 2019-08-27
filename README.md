@@ -73,5 +73,10 @@ The cron above will be executed every 2h. Although, you can always change its fr
 
 * Edgar Rubio (https://github.com/imedgar)
 
+## License
+
+MIT License
+
+Copyright (c) 2019 Edgar Rubio
 
  
