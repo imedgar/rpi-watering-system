@@ -2,6 +2,7 @@
 import RPi.GPIO as GPIO
 from datetime import datetime
 import time
+from configparser import ConfigParser
 from dict_en import dict_en
 
 
@@ -12,6 +13,12 @@ auto_watering_file = "auto_watering.txt"
 IOError_msg = "file_does_not_exist"
 datetime_format = "%b %d %Y %H:%M:%S"
 water_flow = 3
+
+
+def plant_setup():
+    config = ConfigParser()
+    config.read('plant.config')
+    return config['PLANT']['WATER_FLOW']
 
 
 def clean_gpio():
@@ -41,7 +48,7 @@ def get_status(pin=8):
     return GPIO.input(pin)
 
 
-def pump_on(pump_pin=7, delay=water_flow):
+def pump_on(pump_pin=7, delay=water_flow if not plant_setup() else plant_setup()):
     """ Pumps water for delay seconds. """
     # avoid accidentally clicking or several request
     if time_diff()['minutes'] > 0 or time_diff()['seconds'] >= 10:
