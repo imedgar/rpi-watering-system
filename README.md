@@ -59,7 +59,7 @@ In order to automatize it we need to add a cron in the crontab:
 ```
     user@host:~/rpi-watering-system$ crontab -e
 
-    0 */2 * * * sudo ./startup.sh
+    0 */2 * * * cd <your path to web_plants>; sudo python auto_water.py
 ```
 
 The cron above will be executed every 2h. Although, you can always change its frequency, e.g. (https://crontab.guru/examples.html)
