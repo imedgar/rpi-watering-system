@@ -48,7 +48,7 @@ def get_status(pin=8):
     return GPIO.input(pin)
 
 
-def pump_on(pump_pin=7, delay=water_flow if not plant_setup() else plant_setup()):
+def pump_on(pump_pin=7, delay=water_flow if not plant_setup() else float(plant_setup())):
     """ Pumps water for delay seconds. """
     # avoid accidentally clicking or several request
     if time_diff()['minutes'] > 0 or time_diff()['seconds'] >= 10:
