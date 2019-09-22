@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import water
 from dict_en import dict_en
+from sendgrid_utils import send_email
 
 app = Flask('watering-system', static_folder='./templates')
 html_template = 'main.html'
@@ -44,6 +45,12 @@ def clean_gpio():
 def auto_water():
     global last_watered
     last_watered = water.datetime_now_str()
+    send_email(
+        'edgaru90@gmail.com',
+        'edgaru90@gmail.com',
+        'HUE watered your plant',
+        'HUE watered your plant @ ' + water.datetime_now_str()
+    )
     template_data = template()
     return render_template(html_template, **template_data)
 
