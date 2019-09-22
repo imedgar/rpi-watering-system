@@ -1,3 +1,4 @@
-RPi.GPIO
 flask
 gunicorn
+RPi.GPIO
+sendgrid

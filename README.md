@@ -14,6 +14,7 @@ on Python 2.7. which is most probably already installed on your machine.
 
 * It is running on a Gunicorn WSGI server (https://gunicorn.org/). Considering that Flask is only recommended for development purposes, it would not handle a production environment properly.
 
+* Sendgrid API is used to send emails to a specified email every time the plant has been watered. 
 
 ## Software Requirements
 
