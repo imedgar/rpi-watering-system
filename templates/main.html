@@ -9,6 +9,7 @@
         body {background: black;}
         .green {background-color: green;}
         .red {background-color: red;}
+        .blue {background-color: blue;}
         .bg-picture {
             width:150px;
             overflow: hidden;
@@ -51,8 +52,8 @@
             <div class="col-sm-12">
                 <div class="row border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                     <div class="col p-4 d-flex flex-column position-static">
-                        <p> {{ last_watered }} </p>
-                        <p> {{ auto_watered }} </p>
+                        <p>{{ last_watered }} <sub>{{ time_diff }}</sub> </p>
+                        <p>{{ last_check }}</p>
                         <h2> {{ text }} </h2>
                     </div>
                     <div class="col-auto d-flex d-lg-block bg-picture blink {{ is_happy }}"></div>
@@ -60,10 +61,12 @@
             </div>
         </div>
         <br>
+        <!--
         <a href="/"><button class="btn btn-success">Check Soil Status</button></a>
         <a href="/water"><button class="btn btn-info">Water Once</button></a><br><br>
         <br><br>
         <a href="/clean_gpio"><button type="button" class="btn btn-danger">Reset GPIO</button></a>
+        -->
     </main>
     <footer class="mastfoot mt-auto">
         <div class="inner">
